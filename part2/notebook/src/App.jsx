@@ -1,5 +1,23 @@
 import { useState } from 'react'
 
+const PersonForm = ({ valueName, valueNumber, setName, setNumber, handleSubmit }) => {
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div>
+          name: <input value={valueName} onChange={(event) => setName(event.target.value)}/>
+        </div>
+        <div>
+          number: <input value={valueNumber} onChange={(event) => setNumber(event.target.value)}/>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+    </>
+  )
+}
+
 const ShowNumbers = ({ persons }) => {
   return (
     <>
@@ -38,6 +56,9 @@ const App = () => {
       return
     }
     setPersons(persons.concat(personObject))
+    setFileteredPersons(persons.concat(personObject))
+    setNewName("")
+    setNewNumber("")
   }
 
   const handleFilter = (value) => {
@@ -50,17 +71,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter value={newFilterName} onFilter={handleFilter} />
       <h3>Add a new</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input value={newName} onChange={(event) => setNewName(event.target.value)}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={(event) => setNewNumber(event.target.value)}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm valueName={newName} valueNumber={newNumber} setName={setNewName} setNumber={setNewNumber} handleSubmit={handleSubmit}/>
       <h3>Numbers</h3>
       <ShowNumbers persons={filteredPersons} />
     </div>
