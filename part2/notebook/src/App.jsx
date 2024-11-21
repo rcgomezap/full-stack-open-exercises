@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
-import axios from 'axios';
+import services from "./services/services"
 
 
 const PersonForm = ({ valueName, valueNumber, setName, setNumber, handleSubmit }) => {
@@ -21,10 +21,15 @@ const PersonForm = ({ valueName, valueNumber, setName, setNumber, handleSubmit }
   )
 }
 
-const ShowNumbers = ({ persons }) => {
+const ShowNumbers = ({ persons, handleDelete }) => {
   return (
     <>
-      {persons.map((person) => <p key={person.id} >{person.name} {person.number}</p>)}
+      {persons.map((person) => (
+      <div key={person.id}>
+        {person.name} {person.number}
+        <button onClick={() => handleDelete(person)}>delete</button>
+      </div>
+      ))}
     </>
   )
 }
@@ -43,31 +48,29 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilterName, setNewFilterName] = useState('')
+  const [trigger, setTrigger] = useState(0)
 
   useEffect(() => {
-    console.log('Effect')
-    axios
-    .get("http://localhost:3001/persons")
-    .then((response) => {
-      console.log(response)
-      setPersons(response.data)
-      setFileteredPersons(response.data)
-    }
-  )
-  },[])
+  services.getAll().then((contacts) => {
+    console.log('Get all from server')
+    setPersons(contacts)
+    setFileteredPersons(contacts)
+  })
+  },[trigger])
 
 
   const handleSubmit = (event) => {
     event.preventDefault()
     console.log('submitted')
-    const personObject = {name: newName, number: newNumber, id: persons.length + 1 }
-    if (persons.find((person) => person.name === personObject.name) != undefined){
+    const personObject = { name: newName, number: newNumber }
+    const foundPerson = persons.find((person) => person.name === personObject.name)
+    if (foundPerson != undefined){
       console.log('Repeated!')
-      alert(`${personObject.name} is already added to phonebook`)
+      if (window.confirm(`${personObject.name} already added in the phonebook, replace the old number with a new one?`))
+        services.update(foundPerson.id,personObject).then(() => setTrigger(trigger+1))
       return
     }
-    setPersons(persons.concat(personObject))
-    setFileteredPersons(persons.concat(personObject))
+    services.create(personObject).then(() => {setTrigger(trigger+1)})
     setNewName("")
     setNewNumber("")
   }
@@ -77,6 +80,12 @@ const App = () => {
     setFileteredPersons(persons.filter((person) => person.name.toLowerCase().includes(value.toLowerCase())))
   }
 
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`))
+      services.del(person.id).then(() => setTrigger(trigger+1))
+    // console.log('deleted')
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -84,7 +93,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm valueName={newName} valueNumber={newNumber} setName={setNewName} setNumber={setNewNumber} handleSubmit={handleSubmit}/>
       <h3>Numbers</h3>
-      <ShowNumbers persons={filteredPersons} />
+      <ShowNumbers persons={filteredPersons} handleDelete={handleDelete} />
     </div>
   )
 }
