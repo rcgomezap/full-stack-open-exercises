@@ -2,6 +2,29 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import services from "./services/services"
 
+const Notification = ({ notif }) => {
+  const basestyle = {
+    padding: '10px',
+    background: 'lightgrey',
+    fontSize: '15px',
+    borderStyle: 'solid',
+    borderRadius: '5px'
+  }
+  let style =  notif.error ?
+  {
+    color: 'red'
+  }
+  : 
+  {
+    color: 'green',
+  } 
+  style = {...basestyle,...style}
+  if (notif.message === null)
+    return null
+  return <div style={style}>
+    <p>{notif.message}</p>
+  </div>
+}
 
 const PersonForm = ({ valueName, valueNumber, setName, setNumber, handleSubmit }) => {
   return (
@@ -49,6 +72,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilterName, setNewFilterName] = useState('')
   const [trigger, setTrigger] = useState(0)
+  const [notfMessage, setNotfMessage] = useState({message: null, error: false})
 
   useEffect(() => {
   services.getAll().then((contacts) => {
@@ -70,7 +94,11 @@ const App = () => {
         services.update(foundPerson.id,personObject).then(() => setTrigger(trigger+1))
       return
     }
-    services.create(personObject).then(() => {setTrigger(trigger+1)})
+    services.create(personObject).then(() => {
+      setTrigger(trigger+1)
+      setNotfMessage({message: `Added ${personObject.name}`, error: false})
+      setTimeout(() => setNotfMessage({message: null, error: false}),5000)
+    })
     setNewName("")
     setNewNumber("")
   }
@@ -83,11 +111,16 @@ const App = () => {
   const handleDelete = (person) => {
     if (window.confirm(`Delete ${person.name} ?`))
       services.del(person.id).then(() => setTrigger(trigger+1))
+      .catch(() => {
+        setNotfMessage({message: `Information of ${person.name} has already been deleted from server`, error: true})
+        setTimeout(() => setNotfMessage({...notfMessage,message: null}),5000)
+      })
     // console.log('deleted')
   }
 
   return (
     <div>
+      <Notification notif={notfMessage}/>
       <h2>Phonebook</h2>
       <Filter value={newFilterName} onFilter={handleFilter} />
       <h3>Add a new</h3>
