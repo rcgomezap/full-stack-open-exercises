@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import services from "./services/services"
 
+const NotificationTimeout = 5000
+
 const Notification = ({ notif }) => {
   const basestyle = {
     padding: '10px',
@@ -82,6 +84,12 @@ const App = () => {
   })
   },[trigger])
 
+  const handleNotification = ({message, errorStatus}) => {
+    setTrigger(trigger + 1)
+    setNotfMessage({message: message, error: errorStatus})
+    setTimeout(() => setNotfMessage({ message: null }), NotificationTimeout)
+  }
+
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -94,11 +102,13 @@ const App = () => {
         services.update(foundPerson.id,personObject).then(() => setTrigger(trigger+1))
       return
     }
-    services.create(personObject).then(() => {
-      setTrigger(trigger+1)
-      setNotfMessage({message: `Added ${personObject.name}`, error: false})
-      setTimeout(() => setNotfMessage({message: null, error: false}),5000)
+    services.create(personObject).then((response) => {
+      handleNotification({message: `Added ${personObject.name}`, errorStatus: false })
     })
+    .catch(er => {
+      handleNotification({message: er.response.data.error, errorStatus: true})
+    }
+    )
     setNewName("")
     setNewNumber("")
   }
@@ -112,10 +122,8 @@ const App = () => {
     if (window.confirm(`Delete ${person.name} ?`))
       services.del(person.id).then(() => setTrigger(trigger+1))
       .catch(() => {
-        setNotfMessage({message: `Information of ${person.name} has already been deleted from server`, error: true})
-        setTimeout(() => setNotfMessage({...notfMessage,message: null}),5000)
+        handleNotification({message: `Information of ${person.name} has already been deleted from server`, errorStatus: true})
       })
-    // console.log('deleted')
   }
 
   return (
