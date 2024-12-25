@@ -99,7 +99,11 @@ const App = () => {
     if (foundPerson != undefined){
       console.log('Repeated!')
       if (window.confirm(`${personObject.name} already added in the phonebook, replace the old number with a new one?`))
-        services.update(foundPerson.id,personObject).then(() => setTrigger(trigger+1))
+        services.update(foundPerson.id,personObject)
+      .then(() => setTrigger(trigger+1))
+      .catch(er => {
+        handleNotification({message: er.response.data.error, errorStatus: true})
+      })
       return
     }
     services.create(personObject).then((response) => {
