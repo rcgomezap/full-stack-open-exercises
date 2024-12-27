@@ -849,3 +849,6 @@ part3/example/node_modules/vary/LICENSE
 part3/example/node_modules/vary/package.json
 part3/example/node_modules/vary/README.md
 part3/example/package-lock.json
+part4/bloglist/node_modules/*
+*.env
+*-lock.json

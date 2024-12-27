@@ -1,0 +1,9 @@
+POST http://127.0.0.1:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Cien años de soledad",
+   "author": "Gabriel Garcia Marquez",
+    "url": "https://www.casadellibro.com.co/libro-cien-anos-de-soledad/9788497592208/873717",
+    "likes": "5"
+}
