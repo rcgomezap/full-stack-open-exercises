@@ -55,4 +55,13 @@ describe('API endpoints function well',() => {
         assert(Object.hasOwn(response.body,'likes'))
 
     })
+
+    test('if the title or url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request', async() =>{
+        const newFaultyBlog = {
+            title: 'Test',
+            author: 'Test',
+        }
+
+        await api.post('/api/blogs').send(newFaultyBlog).expect(400)
+    })
 })
