@@ -6,6 +6,8 @@ const { initialBlogs, initializeDb, zeroDb } = require('./test_helpers')
 const app = require('../app')
 const api = supertest(app)
 
+const nonExistentId = '67746802e4c83c192d649a51'
+
 beforeEach( async () => {
     await zeroDb()
     await initializeDb()
@@ -63,5 +65,36 @@ describe('API endpoints function well',() => {
         }
 
         await api.post('/api/blogs').send(newFaultyBlog).expect(400)
+    })
+
+    test('functionality for deleting a single blog post resource', async () => {
+        const idToDelete = initialBlogs[0]._id
+        await api.delete(`/api/blogs/${idToDelete}`).expect(204)
+        const response = await api.get('/api/blogs')
+        foundId = response.body.find((blog) => blog.id === idToDelete)
+        assert(!foundId)
+    })
+
+    test('deleting a non existent id returns 404', async () => {
+        await api.delete(`/api/blogs/${nonExistentId}`).expect(404)
+    })
+
+    test('functionality for updating an existent blog', async () => {
+        const idToPut = initialBlogs[0]._id
+        const newLikes = 999
+        await api.put(`/api/blogs/${idToPut}`).send({
+            title: initialBlogs[0].title,
+            url: initialBlogs[0].url,
+            likes: newLikes
+        })
+        const response = await api.get('/api/blogs')
+        foundBlog = response.body.find((blog) => blog.id === idToPut)
+        assert.strictEqual(foundBlog.likes, newLikes)
+    })
+
+    test('trying to update a non existent blog returns 404', async () => {
+        await api.put(`/api/blogs/${nonExistentId}`).send({
+            ...initialBlogs[0]
+        }).expect(404)
     })
 })

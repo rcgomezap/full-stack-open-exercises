@@ -1,0 +1,9 @@
+PUT http://127.0.0.1:3003/api/blogs/67746802e4c83c192d649a51
+content-type: application/json
+
+{
+    "title": "Test",
+    "likes": "0",
+    "url": "0",
+    "author": "xd"
+}
