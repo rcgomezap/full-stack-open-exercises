@@ -1,5 +1,5 @@
 const supertest = require('supertest')
-const { test, describe, after, beforeEach } = require('node:test')
+const { test, only, describe, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const { initialBlogs, initializeDb, zeroDb } = require('./test_helpers')
@@ -24,7 +24,7 @@ describe('API endpoints function well',() => {
 
     test('unique identifier property of the blog posts is named id', async () => {
         const response = await api.get('/api/blogs')
-        assert.strictEqual(Object.hasOwn(response.body[0],'id'),true)
+        assert(Object.hasOwn(response.body[0],'id'))
     })
 
     test('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
@@ -40,6 +40,19 @@ describe('API endpoints function well',() => {
         const response = await api.get('/api/blogs')
 
         assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+    })
+
+    test('if the likes property is missing from the request, it will default to the value 0', async () => {
+        const newBlog = {
+            title: 'Test',
+            author: 'Test',
+            url: 'Test',
+        }
+
+        response = await api.post('/api/blogs').send(newBlog)
+
+        assert(Object.hasOwn(response.body,'likes'))
 
     })
 })
