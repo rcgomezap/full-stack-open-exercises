@@ -26,4 +26,20 @@ describe('API endpoints function well',() => {
         const response = await api.get('/api/blogs')
         assert.strictEqual(Object.hasOwn(response.body[0],'id'),true)
     })
+
+    test('making an HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
+
+        const newBlog = {
+            title: 'Test',
+            author: 'Test',
+            url: 'Test',
+            likes: 1
+        }
+        await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+
+        const response = await api.get('/api/blogs')
+
+        assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+    })
 })
