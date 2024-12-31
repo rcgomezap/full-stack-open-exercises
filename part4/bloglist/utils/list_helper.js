@@ -36,7 +36,6 @@ const mostBlogs = (blogs) => {
 
 const mostLikes = (blogs) => {
     const authorBlogs = getAuthorBlogs(blogs)
-    console.log(authorBlogs)
     const mostLikesAuthor = authorBlogs.reduce((most, author) => author.likes > most.likes ? author : most)
     return { author: mostLikesAuthor.author, likes: mostLikesAuthor.likes }
 }
