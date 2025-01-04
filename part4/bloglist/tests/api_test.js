@@ -4,7 +4,6 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const { initialBlogs, initialUsers, initializeDb, zeroDb } = require('./test_helpers')
 const app = require('../app')
-const { response } = require('express')
 const api = supertest(app)
 
 const nonExistentId = '67746802e4c83c192d649a51'
