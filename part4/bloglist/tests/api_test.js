@@ -2,8 +2,9 @@ const supertest = require('supertest')
 const { test, only, describe, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
-const { initialBlogs, initializeDb, zeroDb } = require('./test_helpers')
+const { initialBlogs, initialUsers, initializeDb, zeroDb } = require('./test_helpers')
 const app = require('../app')
+const { response } = require('express')
 const api = supertest(app)
 
 const nonExistentId = '67746802e4c83c192d649a51'
@@ -52,7 +53,7 @@ describe('API endpoints function well',() => {
             url: 'Test',
         }
 
-        response = await api.post('/api/blogs').send(newBlog)
+        const response = await api.post('/api/blogs').send(newBlog)
 
         assert(Object.hasOwn(response.body,'likes'))
 
@@ -96,5 +97,68 @@ describe('API endpoints function well',() => {
         await api.put(`/api/blogs/${nonExistentId}`).send({
             ...initialBlogs[0]
         }).expect(404)
+    })
+})
+
+describe('User API Endpoints', () => {
+    test('GET users return 201', async () => {
+        await api.get('/api/users').expect(200)
+    })
+
+    test('User is successfully created', async () => {
+        const newUser = {
+            username: 'test',
+            name: 'Test',
+            password: 'password'
+        }
+
+        await api.post('/api/users').send(newUser).expect(201)
+        const response = await api.get('/api/users')
+        assert.strictEqual(response.body.length, initialUsers.length + 1)
+    })
+
+    test('Users are not created when sent without required fields', async () => {
+        const invalidUsers = [
+            {
+                name: 'Test',
+                password: '1234'
+            },
+            {
+                username: 'test1',
+                password: '1234'
+            },
+            {
+                name: 'Test',
+                username: 'test2'
+            }
+        ]
+
+        for (let user of invalidUsers) {
+            await api.post('/api/users').send(user).expect(400)
+        }
+        const response = await api.get('/api/users')
+        assert.strictEqual(response.body.length, initialUsers.length)
+    })
+
+    test('Users are not created when name or password doesnt match required length of 3', async () => {
+        const invalidUsers = [
+            {
+                username: 'te',
+                password: '1234'
+            },
+            {
+                username: 'test',
+                password: '12'
+            },
+            {
+                username: 'te',
+                password: '12'
+            }
+        ]
+        for (let user of invalidUsers) {
+            await api.post('/api/users').send(user).expect(400)
+        }
+        const response = await api.get('/api/users')
+        assert.strictEqual(response.body.length, initialUsers.length)
     })
 })

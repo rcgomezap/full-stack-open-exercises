@@ -1,4 +1,6 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 
 const listWithOneBlog = [
@@ -63,8 +65,16 @@ const initialBlogs = [
   }  
 ]
 
+const initialUsers = [
+  {
+    username: 'firstUser',
+    name: 'First User',
+  }
+]
+
 const zeroDb = async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 }
 
 const initializeDb = async () => {
@@ -72,7 +82,10 @@ const initializeDb = async () => {
     let newBlog = new Blog(blog)
     await newBlog.save()
   }
+  const passwordHash = await bcrypt.hash('1234',10)
+  let newUser = new User({...initialUsers[0], passwordHash})
+  await newUser.save()
 }
 
 
-module.exports = { listWithOneBlog, initialBlogs, initializeDb, zeroDb }
+module.exports = { listWithOneBlog, initialBlogs, initialUsers, initializeDb, zeroDb }
