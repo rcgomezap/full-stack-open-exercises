@@ -26,14 +26,13 @@ userRouter.post('/', (request, response, next) => {
             response.status(201).json(result)
             })
             .catch((er) => next(er))
-
-        })
+    })
 
 })
 
 userRouter.get('/', (request, response, next) => {
 
-    User.find({}).then(users => {
+    User.find({}).populate('blogs', {url: 1, title: 1, author: 1, id: 1}).then(users => {
         return response.json(users)
     })
 })
