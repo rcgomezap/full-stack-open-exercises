@@ -12,7 +12,7 @@ let validTokenHeader = ''
 beforeEach( async () => {
     await zeroDb()
     await initializeDb()
-    loginResponse = await api.post('/api/login')
+    const loginResponse = await api.post('/api/login')
     .send({ ...initialUsers[0], password: '1234' })
     validTokenHeader = `Bearer ${loginResponse.body.token}`
 })
