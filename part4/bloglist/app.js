@@ -13,6 +13,7 @@ mongoose.connect(config.MONGODB_URI).then( () => logger.info('Connected to datab
 
 app.use(cors())
 app.use(express.json())
+app.use(middleware.tokenExtractor)
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)

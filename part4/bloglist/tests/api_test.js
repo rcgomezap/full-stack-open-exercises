@@ -7,10 +7,14 @@ const app = require('../app')
 const api = supertest(app)
 
 const nonExistentId = '67746802e4c83c192d649a51'
+let validTokenHeader = ''
 
 beforeEach( async () => {
     await zeroDb()
     await initializeDb()
+    loginResponse = await api.post('/api/login')
+    .send({ ...initialUsers[0], password: '1234' })
+    validTokenHeader = `Bearer ${loginResponse.body.token}`
 })
 
 after( async () => {
@@ -37,7 +41,7 @@ describe('API endpoints function well',() => {
             url: 'Test',
             likes: 1
         }
-        await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+        await api.post('/api/blogs').send(newBlog).set('Authorization', validTokenHeader).expect(201).expect('Content-Type', /application\/json/)
 
         const response = await api.get('/api/blogs')
 
@@ -52,7 +56,7 @@ describe('API endpoints function well',() => {
             url: 'Test',
         }
 
-        const response = await api.post('/api/blogs').send(newBlog)
+        const response = await api.post('/api/blogs').send(newBlog).set('Authorization', validTokenHeader)
 
         assert(Object.hasOwn(response.body,'likes'))
 
@@ -64,7 +68,7 @@ describe('API endpoints function well',() => {
             author: 'Test',
         }
 
-        await api.post('/api/blogs').send(newFaultyBlog).expect(400)
+        await api.post('/api/blogs').send(newFaultyBlog).set('Authorization', validTokenHeader).expect(400)
     })
 
     test('functionality for deleting a single blog post resource', async () => {
