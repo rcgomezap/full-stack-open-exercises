@@ -8,6 +8,7 @@ const api = supertest(app)
 
 const nonExistentId = '67746802e4c83c192d649a51'
 let validTokenHeader = ''
+let userBlogId = ''
 
 beforeEach( async () => {
     await zeroDb()
@@ -15,6 +16,12 @@ beforeEach( async () => {
     const loginResponse = await api.post('/api/login')
     .send({ ...initialUsers[0], password: '1234' })
     validTokenHeader = `Bearer ${loginResponse.body.token}`
+    newBlog = {title: 'test', url: 'test.com'}
+    const createBlogResponse = await api.post('/api/blogs').set('Authorization', validTokenHeader).send(newBlog)
+    userBlogId = createBlogResponse.body.id
+    initialBlogs.push(newBlog)
+
+
 })
 
 after( async () => {
@@ -48,6 +55,21 @@ describe('API endpoints function well',() => {
         assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
     })
+    test('making an HTTP POST request to the without a valid token to /api/blogs returns 401 status code and does not create a new blog', async () => {
+
+        const newBlog = {
+            title: 'Test',
+            author: 'Test',
+            url: 'Test',
+            likes: 1
+        }
+        await api.post('/api/blogs').send(newBlog).set('Authorization', 'Bearer ').expect(401)
+
+        const response = await api.get('/api/blogs')
+
+        assert.strictEqual(response.body.length, initialBlogs.length)
+
+    })
 
     test('if the likes property is missing from the request, it will default to the value 0', async () => {
         const newBlog = {
@@ -72,11 +94,16 @@ describe('API endpoints function well',() => {
     })
 
     test('functionality for deleting a single blog post resource', async () => {
-        const idToDelete = initialBlogs[0]._id
-        await api.delete(`/api/blogs/${idToDelete}`).expect(204)
+        await api.delete(`/api/blogs/${userBlogId}`).set('Authorization', validTokenHeader).expect(204)
         const response = await api.get('/api/blogs')
-        foundId = response.body.find((blog) => blog.id === idToDelete)
+        foundId = response.body.find((blog) => blog.id === userBlogId)
         assert(!foundId)
+    })
+    test('deleting a single blog post resource without valid token returns status 401', async () => {
+        await api.delete(`/api/blogs/${userBlogId}`).set('Authorization', 'Bearer 1234').expect(401)
+        const response = await api.get('/api/blogs')
+        foundId = response.body.find((blog) => blog.id === userBlogId)
+        assert(foundId)
     })
 
     test('deleting a non existent id returns 404', async () => {
@@ -84,15 +111,14 @@ describe('API endpoints function well',() => {
     })
 
     test('functionality for updating an existent blog', async () => {
-        const idToPut = initialBlogs[0]._id
         const newLikes = 999
-        await api.put(`/api/blogs/${idToPut}`).send({
+        await api.put(`/api/blogs/${userBlogId}`).send({
             title: initialBlogs[0].title,
             url: initialBlogs[0].url,
             likes: newLikes
-        })
+        }).set('Authorization', validTokenHeader)
         const response = await api.get('/api/blogs')
-        foundBlog = response.body.find((blog) => blog.id === idToPut)
+        foundBlog = response.body.find((blog) => blog.id === userBlogId)
         assert.strictEqual(foundBlog.likes, newLikes)
     })
 

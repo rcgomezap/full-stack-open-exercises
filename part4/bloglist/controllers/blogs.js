@@ -16,12 +16,7 @@ blogsRouter.get('/', (request, response) => {
 blogsRouter.post('/', async (request, response, next) => {
 
   try {
-    decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-    if (!decodedToken.id)
-      return response.status(401).json({error: 'invalid token'})
-
-    const userBlog = await User.findById(decodedToken.id)
+    const userBlog = await User.findById(request.decodedToken.id)
     const newBlog =  {
       ...request.body,
       user: userBlog.id,
@@ -39,10 +34,15 @@ blogsRouter.post('/', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   const id = request.params.id
+  
   try {
-    data = await Blog.findByIdAndDelete(id)
-    if (data)
+    data = await Blog.findById(id).populate('user', {id: 1})
+    if (data) {
+      if (data.user.id !== request.decodedToken.id)
+        return response.status(401).json({error: 'blog does not belong to user'})
+      await data.deleteOne()
       return response.status(204).send()
+    }
     else
       return response.status(404).send()
   } catch(er) { next(er) }
@@ -59,9 +59,13 @@ blogsRouter.put('/:id', async (request, response, next) => {
   }
 
   try {
-    updated = await Blog.findByIdAndUpdate(id, blog, { new: true, runValidators: true, context: 'query' })
-    if (updated)
+    toUpdate = await Blog.findById(id).populate('user', {id: 1})
+    if (toUpdate) {
+      if (toUpdate.user.id !== request.decodedToken.id)
+        return response.status(401).json({error: 'blog does not belong to user'})
+      updated = await toUpdate.updateOne(blog, { new: true, runValidators: true, context: 'query' })
       response.json(updated)
+    }
     else
       response.status(404).send()
   } catch(er) { next(er) }

@@ -1,9 +1,27 @@
+const jwt = require('jsonwebtoken')
+
 const badRequest = (response, message) => response.status(400).json({error: message}) 
 
+const authTokenChecker = (request, response, next) => {
+    const authorization = request.get('authorization')
+    if (request.path === '/api/blogs' && !authorization && (request.method === 'POST' || request.method === 'PUT' || request.method === 'DELETE'))
+        return response.status(401).json({error: 'missing auth token'})
+    if (authorization && !authorization.startsWith('Bearer '))
+        return response.status(401).json({error: 'malformatted auth token'})
+    next()
+}
+
 const tokenExtractor = (request, response, next) => {
-    const authorization = request.get('authorization')  
+    const authorization = request.get('authorization')
     if (authorization && authorization.startsWith('Bearer ')) {
             request.token = authorization.replace('Bearer ', '')  
+            if (!request.token)
+                return response.status(401).json({error: 'missing token content'})
+            request.decodedToken = jwt.verify(request.token, process.env.SECRET)
+            if(!request.decodedToken.id || !request.decodedToken) {
+                console.log('middleware - invalid token')
+                return response.status(401).json({error: 'invalid token'})
+            }
         }
     next()
 }
@@ -18,4 +36,4 @@ const errorHandler = (error, request, response, next) => {
 }
 
 
-module.exports = {tokenExtractor, errorHandler }
+module.exports = {authTokenChecker, tokenExtractor, errorHandler }
