@@ -26,6 +26,12 @@ const tokenExtractor = (request, response, next) => {
     next()
 }
 
+const userExtractor = (request, response, next) => {
+    if (request.decodedToken)
+        request.user = {id: request.decodedToken.id, username: request.decodedToken.username}
+    next()
+}
+
 const errorHandler = (error, request, response, next) => {
     if (error.name === 'ValidationError')
         return badRequest(response, error.message)
@@ -36,4 +42,4 @@ const errorHandler = (error, request, response, next) => {
 }
 
 
-module.exports = {authTokenChecker, tokenExtractor, errorHandler }
+module.exports = {authTokenChecker, tokenExtractor, userExtractor, errorHandler }
