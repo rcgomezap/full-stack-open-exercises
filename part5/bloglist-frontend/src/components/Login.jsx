@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import loginService from "../services/login"
+import blogService from "../services/blogs"
 
 const localStorageUserItem = 'loggedUser'
 
@@ -10,7 +11,9 @@ const Login = ({ setUser }) => {
     useEffect (() => {
         const loggedUser = window.localStorage.getItem(localStorageUserItem)
         if (loggedUser) {
-            setUser(JSON.parse(loggedUser))
+            const parsedUser = JSON.parse(loggedUser)
+            setUser(parsedUser)
+            blogService.setToken(parsedUser.token)
         }
     }, [])
 
@@ -20,6 +23,7 @@ const Login = ({ setUser }) => {
             const user = await loginService.logIn({ username, password })
             window.localStorage.setItem(localStorageUserItem, JSON.stringify(user))
             setUser(user)
+            blogService.setToken(user.token)
             console.log('logged in with user', user)
         }
         catch (er) {
