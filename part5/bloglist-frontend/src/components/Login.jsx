@@ -1,20 +1,35 @@
 import { useState, useEffect } from "react"
 import loginService from "../services/login"
 
+const localStorageUserItem = 'loggedUser'
+
 const Login = ({ setUser }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+
+    useEffect (() => {
+        const loggedUser = window.localStorage.getItem(localStorageUserItem)
+        if (loggedUser) {
+            setUser(JSON.parse(loggedUser))
+        }
+    }, [])
 
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
             const user = await loginService.logIn({ username, password })
+            window.localStorage.setItem(localStorageUserItem, JSON.stringify(user))
             setUser(user)
             console.log('logged in with user', user)
         }
         catch (er) {
             console.log('error in log in', er)
         }
+    }
+
+    const handleLogOut = () => {
+        window.localStorage.removeItem(localStorageUserItem)
+        setUser(null)
     }
 
     return <>
@@ -36,3 +51,4 @@ const Login = ({ setUser }) => {
 }
 
 export default Login
+export { localStorageUserItem }
