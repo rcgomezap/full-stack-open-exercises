@@ -24,7 +24,7 @@ const Notification = ({ message, error, notifTrigger }) => {
         fontSize: '15px',
         borderStyle: 'solid',
         borderRadius: '5px',
-        ...(error ? {color: 'red'} : {color: 'green'})
+        color: error ? 'red' : 'green'
     }
 
     if (mes) {
