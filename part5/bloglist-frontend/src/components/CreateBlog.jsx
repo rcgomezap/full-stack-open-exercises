@@ -2,7 +2,7 @@ import { useState } from "react";
 import blogService from "../services/blogs"
 import { localStorageUserItem } from "./Login";
 
-const CreateBlog = ({ toggle, setToggle }) => {
+const CreateBlog = ({ toggle, setToggle, notifHandler }) => {
 
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -19,6 +19,7 @@ const CreateBlog = ({ toggle, setToggle }) => {
             blogService.setToken(JSON.parse(window.localStorage.getItem(localStorageUserItem)).token)
             const response = await blogService.newBlog(newBlog)
             setToggle(toggle + 1)
+            notifHandler({message: `Created new blog`})
             console.log('created new blog', response)
         }
         catch (er) {console.log('error creating blog', er)}

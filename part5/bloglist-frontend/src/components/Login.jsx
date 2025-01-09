@@ -4,7 +4,7 @@ import blogService from "../services/blogs"
 
 const localStorageUserItem = 'loggedUser'
 
-const Login = ({ setUser }) => {
+const Login = ({ setUser, notifHandler }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -28,6 +28,7 @@ const Login = ({ setUser }) => {
         }
         catch (er) {
             console.log('error in log in', er)
+            notifHandler({message: 'wrong username or password', error: true})
         }
     }
 
