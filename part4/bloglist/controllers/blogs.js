@@ -64,8 +64,8 @@ blogsRouter.put('/:id', async (request, response, next) => {
   try {
     toUpdate = await Blog.findById(id).populate('user', {id: 1})
     if (toUpdate) {
-      if (toUpdate.user.id !== user.id)
-        return response.status(401).json({error: 'blog does not belong to user'})
+      // if (toUpdate.user.id !== user.id)
+      //   return response.status(401).json({error: 'blog does not belong to user'})
       updated = await toUpdate.updateOne(blog, { new: true, runValidators: true, context: 'query' })
       response.json(updated)
     }
