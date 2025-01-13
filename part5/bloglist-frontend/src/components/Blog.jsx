@@ -1,12 +1,26 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import blogService from "../services/blogs"
 
 const Blog = ({ blog }) => {
 
   const [view, setView] = useState(false)
+  const [blogObject, setBlogObject] = useState({})
 
   const toggleView = () => {
     setView(!view)
   }
+
+  const likeBlog = async () => {
+    await blogService.likeBlog(blogObject)
+    setBlogObject({
+      ...blogObject,
+      likes: blogObject.likes + 1
+    })
+  }
+
+  useEffect(() => {
+    setBlogObject(blog)
+  }, [])
 
   const style = {
     borderStyle: 'solid',
@@ -20,9 +34,9 @@ const Blog = ({ blog }) => {
     {view ? ( 
       <>
         <button onClick={toggleView}>hide</button>
-        <p>{blog.url}</p>
-        <p>likes {blog.likes} <button>like</button> </p> 
-        <p>{blog.author}</p>
+        <p>{blog.url} {blog.author}</p>
+        <p>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p> 
+        {blog.user && <p>{blog.user.name}</p> }
       </>
 
     ) : (

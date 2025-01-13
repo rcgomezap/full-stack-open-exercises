@@ -2,9 +2,13 @@ import axios from 'axios'
 const baseUrl = '/api/blogs'
 
 let token = null
+let config = null
 
 const setToken = newToken => {
   token = `Bearer ${newToken}`
+  config = {
+    headers: { Authorization: token },
+  }
 }
 
 const getAll = () => {
@@ -13,11 +17,18 @@ const getAll = () => {
 }
 
 const newBlog = (blog) => {
-  const config = {
-    headers: { Authorization: token },
-  }
   const request = axios.post(baseUrl, blog, config)
   return request.then(response => response.data)
 }
 
-export default { setToken, getAll, newBlog}
+const likeBlog = (blog) => {
+  const updatedBlog = {
+    ...blog,
+    likes: blog.likes + 1
+  }
+  
+  const request = axios.put(baseUrl + '/' + blog.id, updatedBlog, config)
+  return request.then(response => response.data)
+}
+
+export default { setToken, getAll, newBlog, likeBlog }
