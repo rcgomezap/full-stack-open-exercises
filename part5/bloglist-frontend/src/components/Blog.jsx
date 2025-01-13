@@ -2,7 +2,11 @@ import { useState } from "react"
 
 const Blog = ({ blog }) => {
 
-  const [view, toggleView] = useState(false)
+  const [view, setView] = useState(false)
+
+  const toggleView = () => {
+    setView(!view)
+  }
 
   const style = {
     borderStyle: 'solid',
@@ -15,6 +19,7 @@ const Blog = ({ blog }) => {
     {blog.title} 
     {view ? ( 
       <>
+        <button onClick={toggleView}>hide</button>
         <p>{blog.url}</p>
         <p>likes {blog.likes} <button>like</button> </p> 
         <p>{blog.author}</p>
