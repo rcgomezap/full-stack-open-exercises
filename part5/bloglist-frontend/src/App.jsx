@@ -11,7 +11,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [toggle, setToggle] = useState(0)
-  const [notif, setNotif] = useState({message: null, error: false})
+  const [notif, setNotif] = useState({ message: null, error: false })
   const [notifTrigger, setNotifTrigger] = useState(0)
 
   const notifHandler = (notififcation) => {
@@ -29,26 +29,26 @@ const App = () => {
     blogService.getAll().then(blogs => {
       const sortedBlogs = blogs.toSorted((a,b) => b.likes - a.likes)
       setBlogs( sortedBlogs )
-  })  
+    })
   }, [toggle])
 
-    return (
+  return (
     <div>
-        <Notification message={notif.message} error={notif.error} notifTrigger={notifTrigger}/>
-        {user ? ( <>
-          <LogOut user={user} setUser={setUser}/>
-          <Togglable buttonLabel='new blog' ref={loginFormRef}>
-            <CreateBlog toggle={toggle} setToggle={setToggle} notifHandler={notifHandler} toggleComponentVisibility={toggleLoginForm}/>
-          </Togglable>
-          <h2>blogs</h2>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </> ) : ( <>
-          <Login setUser={setUser} notifHandler={notifHandler}/>
-        </>
+      <Notification message={notif.message} error={notif.error} notifTrigger={notifTrigger}/>
+      {user ? ( <>
+        <LogOut user={user} setUser={setUser}/>
+        <Togglable buttonLabel='new blog' ref={loginFormRef}>
+          <CreateBlog toggle={toggle} setToggle={setToggle} notifHandler={notifHandler} toggleComponentVisibility={toggleLoginForm}/>
+        </Togglable>
+        <h2>blogs</h2>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
         )}
+      </> ) : ( <>
+        <Login setUser={setUser} notifHandler={notifHandler}/>
+      </>
+      )}
     </div>
-    )
+  )
 }
 export default App

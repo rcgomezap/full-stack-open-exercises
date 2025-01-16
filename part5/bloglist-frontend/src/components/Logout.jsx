@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react"
-import { localStorageUserItem } from "./Login"
+import { useState, useEffect } from 'react'
+import { localStorageUserItem } from './Login'
 
 const LogOut = ({ user, setUser }) => {
 
-    const handleLogOut = () => {
-        window.localStorage.removeItem(localStorageUserItem)
-        setUser(null)
-    }
+  const handleLogOut = () => {
+    window.localStorage.removeItem(localStorageUserItem)
+    setUser(null)
+  }
 
-    return <>
+  return <>
     {user.name} logged in
     <button onClick={handleLogOut}>logout</button>
-    </>
+  </>
 }
 
 export default LogOut

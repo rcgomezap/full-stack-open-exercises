@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import blogService from "../services/blogs"
+import { useState, useEffect } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
 
@@ -27,7 +27,7 @@ const Blog = ({ blog }) => {
 
   useEffect(() => {
     setBlogObject(blog)
-  }, [])
+  }, [blog])
 
   const style = {
     borderStyle: 'solid',
@@ -39,22 +39,22 @@ const Blog = ({ blog }) => {
     return null
 
   return (
-  <div style={style}>
-    {blog.title} {blog.author}
-    {view ? ( 
-      <>
-        <button onClick={toggleView}>hide</button>
-        <p>{blog.url}</p>
-        <p>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p> 
-        {blog.user && <p>{blog.user.name}</p> }
-        <button onClick={deleteBlog} >delete</button>
-      </>
+    <div style={style}>
+      {blog.title} {blog.author}
+      {view ? (
+        <>
+          <button onClick={toggleView}>hide</button>
+          <p>{blog.url}</p>
+          <p>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p>
+          {blog.user && <p>{blog.user.name}</p> }
+          <button onClick={deleteBlog} >delete</button>
+        </>
 
-    ) : (
-      <button onClick={toggleView}>view</button>
-    )}
-  </div>
-  )  
+      ) : (
+        <button onClick={toggleView}>view</button>
+      )}
+    </div>
+  )
 }
 
 export default Blog

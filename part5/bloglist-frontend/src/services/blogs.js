@@ -26,7 +26,7 @@ const likeBlog = (blog) => {
     ...blog,
     likes: blog.likes + 1
   }
-  
+
   const request = axios.put(baseUrl + '/' + blog.id, updatedBlog, config)
   return request.then(response => response.data)
 }
