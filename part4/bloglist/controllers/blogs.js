@@ -40,8 +40,8 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   try {
     data = await Blog.findById(id).populate('user', {id: 1})
     if (data) {
-      if (data.user.id !== user.id)
-        return response.status(401).json({error: 'blog does not belong to user'})
+      // if (data.user.id !== user.id)
+        // return response.status(401).json({error: 'blog does not belong to user'})
       await data.deleteOne()
       return response.status(204).send()
     }
