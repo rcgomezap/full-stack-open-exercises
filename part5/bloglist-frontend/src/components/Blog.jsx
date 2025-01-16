@@ -40,11 +40,11 @@ const Blog = ({ blog }) => {
 
   return (
   <div style={style}>
-    {blog.title} 
+    {blog.title} {blog.author}
     {view ? ( 
       <>
         <button onClick={toggleView}>hide</button>
-        <p>{blog.url} {blog.author}</p>
+        <p>{blog.url}</p>
         <p>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p> 
         {blog.user && <p>{blog.user.name}</p> }
         <button onClick={deleteBlog} >delete</button>
