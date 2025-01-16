@@ -31,4 +31,9 @@ const likeBlog = (blog) => {
   return request.then(response => response.data)
 }
 
-export default { setToken, getAll, newBlog, likeBlog }
+const deleteBlog = (blog) => {
+  const request = axios.delete(baseUrl + '/' + blog.id, config)
+  return request.then(response => response.data)
+}
+
+export default { setToken, getAll, newBlog, likeBlog, deleteBlog }
