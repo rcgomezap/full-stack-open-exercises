@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 const notifTime = 5000
 
@@ -32,6 +33,10 @@ const Notification = ({ message, error, notifTrigger }) => {
       <p>{mes}</p>
     </div>
   }
+}
+
+Notification.propTypes = {
+  notifTrigger: PropTypes.number.isRequired
 }
 
 export default Notification
