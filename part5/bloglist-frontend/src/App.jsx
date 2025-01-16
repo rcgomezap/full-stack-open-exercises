@@ -26,9 +26,10 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      const sortedBlogs = blogs.toSorted((a,b) => b.likes - a.likes)
+      setBlogs( sortedBlogs )
+  })  
   }, [toggle])
 
     return (
