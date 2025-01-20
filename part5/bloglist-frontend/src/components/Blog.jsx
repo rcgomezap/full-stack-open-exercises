@@ -43,15 +43,15 @@ const Blog = ({ blog }) => {
       {blog.title} {blog.author}
       {view ? (
         <>
-          <button onClick={toggleView}>hide</button>
-          <p>{blog.url}</p>
-          <p>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p>
-          {blog.user && <p>{blog.user.name}</p> }
-          <button onClick={deleteBlog} >delete</button>
+          <button className='hide' onClick={toggleView}>hide</button>
+          <p className='url' >{blog.url}</p>
+          <p className='likes'>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p>
+          {blog.user && <p className='username'>{blog.user.name}</p> }
+          <button className='delete' onClick={deleteBlog} >delete</button>
         </>
 
       ) : (
-        <button onClick={toggleView}>view</button>
+        <button className='view' onClick={toggleView}>view</button>
       )}
     </div>
   )
