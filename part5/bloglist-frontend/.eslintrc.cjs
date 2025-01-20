@@ -1,3 +1,5 @@
+import globals from "globals";
+
 module.exports = {
   root: true,
   env: {
@@ -14,6 +16,9 @@ module.exports = {
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
+  globals: {
+    ...globals.jest,
+  },
   rules: {
     "indent": [
         "error",

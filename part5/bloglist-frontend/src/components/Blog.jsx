@@ -39,7 +39,7 @@ const Blog = ({ blog }) => {
     return null
 
   return (
-    <div style={style}>
+    <div className='blog' style={style}>
       {blog.title} {blog.author}
       {view ? (
         <>
