@@ -35,7 +35,6 @@ test('blog\'s URL and number of likes are shown when the button controlling the 
     const button = container.querySelector('.view')
     await user.click(button)
 
-
     expect(div).toHaveTextContent(blog.likes)
     expect(div).toHaveTextContent(blog.url)
 
