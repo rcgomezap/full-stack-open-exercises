@@ -16,7 +16,11 @@ const CreateBlog = ({ toggle, setToggle, notifHandler, toggleComponentVisibility
         url,
         ...(author && { author })
       }
-      blogService.setToken(JSON.parse(window.localStorage.getItem(localStorageUserItem)).token)
+      try {
+        blogService.setToken(JSON.parse(window.localStorage.getItem(localStorageUserItem)).token)
+      }
+      catch(er){}
+      
       const response = await createBlogService(newBlog)
       setToggle(toggle + 1)
       toggleComponentVisibility()
@@ -31,17 +35,17 @@ const CreateBlog = ({ toggle, setToggle, notifHandler, toggleComponentVisibility
     <form onSubmit={handleCreate}>
       <div>
             title:
-        <input type="text" value={title} onChange={({ target }) => setTitle(target.value)}/>
+        <input className='inputTitle' type="text" value={title} onChange={({ target }) => setTitle(target.value)}/>
       </div>
       <div>
             author:
-        <input type="text" value={author} onChange={({ target }) => setAuthor(target.value)}/>
+        <input className='inputAuthor' type="text" value={author} onChange={({ target }) => setAuthor(target.value)}/>
       </div>
       <div>
             url:
-        <input type="text" value={url} onChange={({ target }) => setUrl(target.value)}/>
+        <input className='inputUrl' type="text" value={url} onChange={({ target }) => setUrl(target.value)}/>
       </div>
-      <button type="submit">create</button>
+      <button className='btnSubmit' type="submit">create</button>
     </form>
   </>
 }
