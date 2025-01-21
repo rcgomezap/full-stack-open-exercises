@@ -2,7 +2,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import { localStorageUserItem } from './Login'
 
-const CreateBlog = ({ toggle, setToggle, notifHandler, toggleComponentVisibility }) => {
+const CreateBlog = ({ toggle, setToggle, notifHandler, toggleComponentVisibility, createBlogService }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -17,7 +17,7 @@ const CreateBlog = ({ toggle, setToggle, notifHandler, toggleComponentVisibility
         ...(author && { author })
       }
       blogService.setToken(JSON.parse(window.localStorage.getItem(localStorageUserItem)).token)
-      const response = await blogService.newBlog(newBlog)
+      const response = await createBlogService(newBlog)
       setToggle(toggle + 1)
       toggleComponentVisibility()
       notifHandler({ message: 'Created new blog' })

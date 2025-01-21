@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlogService, deleteBlogService }) => {
 
   const [view, setView] = useState(false)
   const [blogObject, setBlogObject] = useState({})
@@ -11,7 +10,7 @@ const Blog = ({ blog }) => {
   }
 
   const likeBlog = async () => {
-    await blogService.likeBlog(blogObject)
+    await likeBlogService(blogObject)
     setBlogObject({
       ...blogObject,
       likes: blogObject.likes + 1
@@ -20,7 +19,7 @@ const Blog = ({ blog }) => {
 
   const deleteBlog = async () => {
     if (window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}`)) {
-      await blogService.deleteBlog(blogObject)
+      await deleteBlogService(blogObject)
       setBlogObject(null)
     }
   }

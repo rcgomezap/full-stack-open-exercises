@@ -38,11 +38,11 @@ const App = () => {
       {user ? ( <>
         <LogOut user={user} setUser={setUser}/>
         <Togglable buttonLabel='new blog' ref={loginFormRef}>
-          <CreateBlog toggle={toggle} setToggle={setToggle} notifHandler={notifHandler} toggleComponentVisibility={toggleLoginForm}/>
+          <CreateBlog toggle={toggle} setToggle={setToggle} notifHandler={notifHandler} toggleComponentVisibility={toggleLoginForm} createBlogService={blogService.newBlog}/>
         </Togglable>
         <h2>blogs</h2>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeBlogService={blogService.likeBlog} deleteBlogService={blogService.deleteBlog}/>
         )}
       </> ) : ( <>
         <Login setUser={setUser} notifHandler={notifHandler}/>
