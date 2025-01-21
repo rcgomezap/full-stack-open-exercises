@@ -44,7 +44,7 @@ const Blog = ({ blog, likeBlogService, deleteBlogService }) => {
         <>
           <button className='hide' onClick={toggleView}>hide</button>
           <p className='url' >{blog.url}</p>
-          <p className='likes'>likes {blogObject.likes} <button onClick={likeBlog}>like</button> </p>
+          <p className='likes'>likes {blogObject.likes} <button className='likebtn' onClick={likeBlog}>like</button> </p>
           {blog.user && <p className='username'>{blog.user.name}</p> }
           <button className='delete' onClick={deleteBlog} >delete</button>
         </>
