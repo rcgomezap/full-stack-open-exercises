@@ -42,11 +42,11 @@ const Login = ({ setUser, notifHandler }) => {
     <form onSubmit={handleLogin}>
       <div>
             username
-        <input type="text" value={username} onChange={({ target }) => setUsername(target.value)}/>
+        <input type="text" data-testid='username' value={username} onChange={({ target }) => setUsername(target.value)}/>
       </div>
       <div>
             password
-        <input type="password" value={password} onChange={({ target }) => setPassword(target.value)}/>
+        <input type="password"  data-testid='password' value={password} onChange={({ target }) => setPassword(target.value)}/>
       </div>
       <div>
         <button type="submit">Submit</button>
