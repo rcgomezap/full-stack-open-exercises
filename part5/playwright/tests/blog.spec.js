@@ -1,6 +1,5 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import exp from 'constants';
 
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
