@@ -3,8 +3,9 @@ import { test, expect } from '@playwright/test';
 import exp from 'constants';
 
 test.describe('Blog app', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173')
+  test.beforeEach(async ({ page, request }) => {
+    await request.post('/api/testing/reset')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
