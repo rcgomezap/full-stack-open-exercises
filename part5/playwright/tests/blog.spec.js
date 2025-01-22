@@ -1,6 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import { loginWith } from './helper';
+import { loginWith, newBlog } from './helper';
+import { beforeEach } from 'node:test';
 
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
@@ -28,6 +29,23 @@ test.describe('Blog app', () => {
     test('fails with wrong credentials', async ({ page }) => {
       await loginWith(page, 'test', '4321')
       await expect(page.getByText('wrong username or password')).toBeVisible()
+    })
+  })
+
+  test.describe('When logged in', () => {
+
+    test.beforeEach(async ({ page }) => {
+      await loginWith(page, 'test', '1234')
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      const blog = {
+        title: 'title',
+        author: 'author',
+        url: 'url'
+      }
+      await newBlog(page, blog)
+      await expect(page.getByText('view')).toBeVisible()
     })
   })
 })
