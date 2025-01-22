@@ -115,6 +115,15 @@ test.describe('Blog app', () => {
 
       })
 
+      test('only the user who added the blog sees the blog\'s delete button', async ({ page }) => {
+        await page.locator('div').filter({ hasText: /^Existent blog title Testerview$/ }).getByRole('button').click()
+        await page.locator('div').filter({ hasText: /^title authorview$/ }).getByRole('button').click()
+
+        expect(page.getByText('Existent blog title').getByText('delete')).not.toBeVisible()
+        expect(page.getByText('title authorhideurllikes 0').getByText('delete')).toBeVisible()
+
+      })
+
     })
 
   })

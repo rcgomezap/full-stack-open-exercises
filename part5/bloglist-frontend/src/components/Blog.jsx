@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const Blog = ({ blog, likeBlogService, deleteBlogService }) => {
+const Blog = ({ blog, user, likeBlogService, deleteBlogService }) => {
 
   const [view, setView] = useState(false)
   const [blogObject, setBlogObject] = useState({})
@@ -46,7 +46,9 @@ const Blog = ({ blog, likeBlogService, deleteBlogService }) => {
           <p className='url' >{blog.url}</p>
           <p className='likes'>likes {blogObject.likes} <button className='likebtn' onClick={likeBlog}>like</button> </p>
           {blog.user && <p className='username'>{blog.user.name}</p> }
-          <button className='delete' onClick={deleteBlog} >delete</button>
+          {blog.user.username === user.username && (
+            <button className='delete' onClick={deleteBlog} >delete</button>
+          )}
         </>
 
       ) : (
