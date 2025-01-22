@@ -13,6 +13,36 @@ test.describe('Blog app', () => {
         password: '1234'
       }
     })
+
+    await request.post('/api/users', {
+      data: {
+        name: 'Testing User 2',
+        username: 'test2',
+        password: '1234'
+      }
+    })
+
+    const response = await request.post('/api/login', {
+      data: {
+        username: 'test2',
+        password: '1234'
+      }
+    })
+
+    const responseBody = await response.json()
+
+    await request.post('/api/blogs', {
+      data: {
+        title: 'Existent blog title',
+        author: 'Tester',
+        url: 'url.com'
+      },
+      headers: 
+      {
+        Authorization: `Bearer ${responseBody.token}`
+      }
+    })
+
     await page.goto('/')
   })
 
@@ -45,7 +75,7 @@ test.describe('Blog app', () => {
         url: 'url'
       }
       await newBlog(page, blog)
-      await expect(page.getByText('view')).toBeVisible()
+      await expect(page.getByText('title authorview')).toBeVisible()
     })
 
     describe('when a blog is created', () => {
