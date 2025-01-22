@@ -62,7 +62,7 @@ test.describe('Blog app', () => {
       test('a blog can be liked', async ({ page }) => {
         await page.getByText('view').click()
         await page.getByText('like').click()
-        const liked = await page.getByText('likes 1 like')
+        const liked = page.getByText('likes 1 like')
         await liked.waitFor()
         expect(liked).toBeVisible()
       })
