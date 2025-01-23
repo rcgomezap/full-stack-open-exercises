@@ -89,7 +89,7 @@ test.describe('Blog app', () => {
     })
 
     test('blogs are arranged in the order according to the likes, the blog with the most likes first', async ({ page, request }) => {
-      const blogsToFill = 10
+      const blogsToFill = 37
       await fillRandomLikesBlogs(request, validToken, blogsToFill)
       await page.reload()
       const blog = page.getByText('random').first()
