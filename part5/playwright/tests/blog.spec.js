@@ -1,6 +1,8 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import { loginWith, newBlog } from './helper';
+import { loginWith, newBlog, fillRandomLikesBlogs, isSorted } from './helper';
+
+let validToken = ''
 
 test.describe('Blog app', () => {
   test.beforeEach(async ({ page, request }) => {
@@ -29,6 +31,7 @@ test.describe('Blog app', () => {
     })
 
     const responseBody = await response.json()
+    validToken = responseBody.token
 
     await request.post('/api/blogs', {
       data: {
@@ -38,7 +41,7 @@ test.describe('Blog app', () => {
       },
       headers: 
       {
-        Authorization: `Bearer ${responseBody.token}`
+        Authorization: `Bearer ${validToken}`
       }
     })
 
@@ -83,6 +86,32 @@ test.describe('Blog app', () => {
       const liked = page.getByText('likes 1 like')
       await liked.waitFor()
       expect(liked).toBeVisible()
+    })
+
+    test('blogs are arranged in the order according to the likes, the blog with the most likes first', async ({ page, request }) => {
+      const blogsToFill = 10
+      await fillRandomLikesBlogs(request, validToken, blogsToFill)
+      await page.reload()
+      const blog = page.getByText('random').first()
+      await blog.waitFor()
+      
+      //  Click every view button
+      while (await page.getByText('view').count() > 0) {
+        await page.getByText('view').first().click()
+      }
+
+      // Fill an array with every like
+      let likesArray = []
+      const likesElements = await page.locator('.likes').all()
+      for (const element of likesElements) {
+        const match = (await element.innerText()).match(/\d+/) // Use a regular expression to find the first number in the string
+        const number = Number(match ? match[0] : null) // match[0] will contain the first number found in the string
+        likesArray.push(number)
+      }
+
+      // Check if the array is sorted
+      const sorted = isSorted(likesArray)
+      expect(sorted).toBeTruthy()
     })
 
     test.describe('when a blog is created', () => {

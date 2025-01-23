@@ -12,4 +12,30 @@ const newBlog = async (page, blog) => {
     await page.getByRole('button', { name: 'create' }).click()
 }
 
-export { loginWith, newBlog }
+const fillRandomLikesBlogs = async (request, validToken, numberOfBlogs) => {
+
+    for (let i = 0; i < numberOfBlogs; i++) {
+        await request.post('/api/blogs', {
+            data: {
+            title: 'random',
+            author: 'random',
+            url: 'random',
+            likes: Math.floor(Math.random() * 100)
+            },
+            headers: 
+            {
+            Authorization: `Bearer ${validToken}`
+            }
+        })
+    }
+}
+
+const isSorted = (array) => {
+    for (let i = 0 ; i < array.length - 1; i++) {
+        if (array[i + 1] - array[i] > 0)
+            return false
+    }
+    return true
+}
+
+export { loginWith, newBlog, fillRandomLikesBlogs, isSorted }
